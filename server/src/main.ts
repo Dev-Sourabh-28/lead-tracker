@@ -18,8 +18,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const cookieParserMiddleware = cookieParser as unknown as RequestHandler;
-  app.use(cookieParserMiddleware());
+  app.use(cookieParser());
 
   await app.listen(process.env.PORT ?? 3000);
 }
