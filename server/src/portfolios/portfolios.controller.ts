@@ -31,7 +31,7 @@ export class PortfoliosController {
 
     @Get(':slug')
     findBySlug(@Param('slug') slug: string){
-        return this.portfoliosService.findBySlug(slug);
+        return this.portfoliosService.findBySlug(slug)
     }
 
     @UseGuards(JwtAuthGuard)
