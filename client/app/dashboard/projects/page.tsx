@@ -112,7 +112,7 @@ export default function ProjectsPage() {
                             />
                         </div>
                         <div>
-                            <label className={labelClass}>Live URL</label>
+                            <label className={labelClass}>Live URL's</label>
                             <input
                                 type="text"
                                 placeholder="https://myproject.com"
