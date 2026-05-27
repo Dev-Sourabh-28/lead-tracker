@@ -2,7 +2,7 @@ export const isAuthenticated = () => {
     if(typeof window === "undefined"){
         return false;
     }
-    return !!localStorage.getItem("token");
+    return !!localStorage.getItem("token")
 }
 
 export const logout = () => {
