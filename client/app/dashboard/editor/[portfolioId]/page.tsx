@@ -7,6 +7,7 @@ interface Project {
   id: string;
   title: string;
   description: string;
+  techStack?: string[];
 }
 
 interface Portfolio {
@@ -44,6 +45,8 @@ export default function PortfolioEditor({ params }: PortfolioEditorProps) {
     }, [portfolioId]);
 
     const savePortfolio = async () => {
+        if (!portfolio) return;
+
         try {
             await API.patch(`/portfolios/${portfolioId}`, {
                 title: portfolio.title,
@@ -67,6 +70,8 @@ export default function PortfolioEditor({ params }: PortfolioEditorProps) {
             </div>
         );
     }
+
+    const projects = portfolio.projects ?? [];
 
     return (
         <div className="min-h-screen grid grid-cols-2">
@@ -176,8 +181,8 @@ export default function PortfolioEditor({ params }: PortfolioEditorProps) {
                         </div>
 
                         <div className="grid gap-5">
-                            {portfolio.projects?.length > 0 ? (
-                                portfolio.projects.map((project) => (
+                            {projects.length > 0 ? (
+                                projects.map((project) => (
                                     <div
                                         key={project.id}
                                         className="bg-white border border-[#e8e0d0] rounded-2xl p-6 shadow-sm"
@@ -189,7 +194,7 @@ export default function PortfolioEditor({ params }: PortfolioEditorProps) {
                                             {project.description}
                                         </p>
 
-                                        {project.techStack?.length > 0 && (
+                                        {project.techStack?.length ? (
                                             <div className="flex gap-2 flex-wrap mt-4">
                                                 {project.techStack.map((tech: string) => (
                                                     <span
@@ -200,7 +205,7 @@ export default function PortfolioEditor({ params }: PortfolioEditorProps) {
                                                     </span>
                                                 ))}
                                             </div>
-                                        )}
+                                        ) : null}
                                     </div>
                                 ))
                             ) : (
