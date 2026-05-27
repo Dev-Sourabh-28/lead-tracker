@@ -1,13 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import API from "@/app/lib/axios";
 
-export default function ProjectsPage() {
-    const [projects, setProjects] = useState([]);
-    const [portfolios, setPortfolios] = useState([]);
+interface Portfolio {
+  id: string;
+  title: string;
+}
 
-    const [formData, setFormData] = useState({
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  githubUrl?: string;
+  liveUrl?: string;
+  techStack?: string[];
+}
+
+interface ProjectFormData {
+  title: string;
+  description: string;
+  githubUrl: string;
+  liveUrl: string;
+  techStack: string;
+  portfolioId: string;
+}
+
+export default function ProjectsPage() {
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
+
+    const [formData, setFormData] = useState<ProjectFormData>({
         title: "",
         description: "",
         githubUrl: "",
@@ -16,24 +39,30 @@ export default function ProjectsPage() {
         portfolioId: "",
     });
 
-    useEffect(() => {
-        fetchProjects();
-        fetchPortfolios();
-    }, []);
-
-    const fetchProjects = async () => {
+    const fetchProjects = useCallback(async () => {
         try {
-            const res = await API.get("/projects");
+            const res = await API.get<Project[]>("/projects");
             setProjects(res.data);
         } catch (error) { console.log(error); }
-    };
+    }, []);
 
-    const fetchPortfolios = async () => {
-        try {
-            const res = await API.get("/portfolios");
-            setPortfolios(res.data);
-        } catch (error) { console.log(error); }
-    };
+    // portfolios are loaded during initial effect; no separate callback needed
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const res = await API.get<Project[]>("/projects");
+                setProjects(res.data);
+            } catch (error) { console.log(error); }
+
+            try {
+                const res2 = await API.get<Portfolio[]>("/portfolios");
+                setPortfolios(res2.data);
+            } catch (error) { console.log(error); }
+        };
+
+        void load();
+    }, []);
 
     const createProject = async () => {
         try {
@@ -48,8 +77,8 @@ export default function ProjectsPage() {
 
     const deleteProject = async (id: string) => {
         try {
-            await API.delete(`/project/${id}`);
-            fetchProjects();
+            await API.delete(`/projects/${id}`);
+            void fetchProjects();
         } catch (error) { console.log(error); }
     };
 
@@ -112,7 +141,7 @@ export default function ProjectsPage() {
                             />
                         </div>
                         <div>
-                            <label className={labelClass}>Live URL's</label>
+                            <label className={labelClass}>Live URLs</label>
                             <input
                                 type="text"
                                 placeholder="https://myproject.com"
@@ -142,7 +171,7 @@ export default function ProjectsPage() {
                             className={`${inputClass} cursor-pointer`}
                         >
                             <option value="">Select a portfolio</option>
-                            {portfolios.map((portfolio: any) => (
+                            {portfolios.map((portfolio) => (
                                 <option key={portfolio.id} value={portfolio.id}>
                                     {portfolio.title}
                                 </option>
@@ -161,7 +190,7 @@ export default function ProjectsPage() {
 
             {/* Projects List */}
             <div className="grid gap-5">
-                {projects.map((project: any) => (
+                {projects.map((project) => (
                     <div
                         key={project.id}
                         className="bg-white border border-[#e8e0d0] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"

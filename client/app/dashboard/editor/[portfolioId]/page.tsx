@@ -1,26 +1,47 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { use } from "react";
 import API from "@/app/lib/axios";
 
-export default function PortfolioEditor({
-    params,
-}: {
-    params: Promise<{ portfolioId: string }>;
-}) {
-    const { portfolioId } = use(params);
-    const [portfolio, setPortfolio] = useState<any>(null);
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+}
 
-    useEffect(() => { fetchPortfolio(); }, []);
+interface Portfolio {
+  id: string;
+  title: string;
+  bio: string;
+  slug: string;
+  theme: string;
+  projects?: Project[];
+}
 
-    const fetchPortfolio = async () => {
+interface PortfolioEditorProps {
+  params: {
+    portfolioId: string;
+  };
+}
+
+export default function PortfolioEditor({ params }: PortfolioEditorProps) {
+  const { portfolioId } = params;
+
+  const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
+
+    useEffect(() => {
+      const loadPortfolio = async () => {
         try {
-            const res = await API.get("/portfolios");
-            const currentPortfolio = res.data.find((item: any) => item.id === portfolioId);
-            setPortfolio(currentPortfolio);
-        } catch (error) { console.log(error); }
-    };
+          const res = await API.get<Portfolio[]>("/portfolios");
+          const currentPortfolio = res.data.find((item) => item.id === portfolioId) ?? null;
+          setPortfolio(currentPortfolio);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      void loadPortfolio();
+    }, [portfolioId]);
 
     const savePortfolio = async () => {
         try {
@@ -156,7 +177,7 @@ export default function PortfolioEditor({
 
                         <div className="grid gap-5">
                             {portfolio.projects?.length > 0 ? (
-                                portfolio.projects.map((project: any) => (
+                                portfolio.projects.map((project) => (
                                     <div
                                         key={project.id}
                                         className="bg-white border border-[#e8e0d0] rounded-2xl p-6 shadow-sm"

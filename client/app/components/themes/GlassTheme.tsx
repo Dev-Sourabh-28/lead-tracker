@@ -1,6 +1,11 @@
-export default function GlassTheme({
-  portfolio,
-}: any) {
+type ThemeProps = {
+  portfolio: {
+    title: string;
+    bio: string;
+  };
+};
+
+export default function GlassTheme({ portfolio }: ThemeProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-200 to-blue-200 p-10">

@@ -1,22 +1,42 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import API from "../lib/axios";
 import Link from "next/link";
 
-export default function DashboardPage() {
-    const [portfolios, setPortfolios] = useState([]);
-    const [formData, setFormData] = useState({ title: "", slug: "", bio: "" });
-    const router = useRouter();
+interface Portfolio {
+  id: string;
+  title: string;
+  bio: string;
+  slug: string;
+}
 
-    useEffect(() => { fetchPortfolios(); }, []);
+interface PortfolioFormData {
+  title: string;
+  slug: string;
+  bio: string;
+}
+
+export default function DashboardPage() {
+    const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
+    const [formData, setFormData] = useState<PortfolioFormData>({ title: "", slug: "", bio: "" });
 
     const fetchPortfolios = async () => {
         try {
-            const res = await API.get("/portfolios");
+            const res = await API.get<Portfolio[]>("/portfolios");
             setPortfolios(res.data);
         } catch (error) { console.log(error); }
     };
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const res = await API.get<Portfolio[]>("/portfolios");
+                setPortfolios(res.data);
+            } catch (error) { console.log(error); }
+        };
+
+        void load();
+    }, []);
 
     const createPortfolio = async () => {
         try {
@@ -98,7 +118,7 @@ export default function DashboardPage() {
 
             {/* Portfolio Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {portfolios.map((portfolio: any) => (
+                {portfolios.map((portfolio) => (
                     <div
                         key={portfolio.id}
                         className="bg-white border border-[#e8e0d0] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"

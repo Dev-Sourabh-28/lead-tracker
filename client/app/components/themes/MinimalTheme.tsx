@@ -1,6 +1,11 @@
-export default function MinimalTheme({
-  portfolio,
-}: any) {
+type ThemeProps = {
+  portfolio: {
+    title: string;
+    bio: string;
+  };
+};
+
+export default function MinimalTheme({ portfolio }: ThemeProps) {
 
   return (
     <div className="min-h-screen bg-white text-black">

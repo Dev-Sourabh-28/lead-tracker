@@ -4,29 +4,29 @@ import { CreateProjectDto } from './dto/create-project.dto';
 
 @Injectable()
 export class ProjectsService {
-    constructor(private prisma: PrismaService){}
+  constructor(private prisma: PrismaService) {}
 
-    async create(dto: CreateProjectDto){
-        return this.prisma.project.create({
-            data: dto,
-        });
-    }
+  async create(dto: CreateProjectDto) {
+    return this.prisma.project.create({
+      data: dto,
+    });
+  }
 
-    async findAll(userId: string) {
-        return this.prisma.project.findMany({
-            where: {
-                portfolio: {
-                    userId,
-                }
-            }
-        });
-    }
+  async findAll(userId: string) {
+    return this.prisma.project.findMany({
+      where: {
+        portfolio: {
+          userId,
+        },
+      },
+    });
+  }
 
-    async remove(id: string) {
-        return this.prisma.project.delete({
-            where: {
-                id,
-            },
-        });
-    }
+  async remove(id: string) {
+    return this.prisma.project.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }
