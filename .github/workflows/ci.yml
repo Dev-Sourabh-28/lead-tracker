@@ -1,0 +1,81 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - crm-backup
+
+  pull_request:
+    branches:
+      - main
+      - crm-backup
+
+jobs:
+
+  frontend:
+    name: Frontend Checks
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Lint
+        run: npm run lint
+
+      - name: Run Tests
+        run: npm run test -- --watchAll=false
+
+      - name: Run Test Coverage
+        run: npm run test:coverage
+
+      - name: Build Frontend
+        run: npm run build
+
+  backend:
+    name: Backend Checks
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Run Lint
+        run: npm run lint
+
+      - name: Run Tests
+        run: npm run test -- --watchAll=false
+
+      - name: Run Coverage
+        run: npm run test:coverage
+
+      - name: Build Backend
+        run: npm run build
