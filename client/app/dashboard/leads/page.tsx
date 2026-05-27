@@ -1,10 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import API from "@/app/lib/axios";
 
+interface Lead {
+  id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  company?: string;
+  notes?: string;
+  status?: string;
+}
+
+type LeadFormData = Omit<Lead, "id" | "status">;
+
+const leadFields: Array<{
+  name: keyof LeadFormData;
+  placeholder: string;
+  type: string;
+  required?: boolean;
+}> = [
+  { name: "name", placeholder: "Full Name", type: "text", required: true },
+  { name: "phone", placeholder: "Phone Number", type: "tel" },
+  { name: "email", placeholder: "Email Address", type: "email" },
+  { name: "company", placeholder: "Company", type: "text" },
+];
+
 export default function LeadsPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<LeadFormData>({
     name: "",
     phone: "",
     email: "",
@@ -12,15 +36,15 @@ export default function LeadsPage() {
     notes: "",
   });
 
-  const [leads, setLeads] = useState([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
-  const [editingLead, setEditingLead] = useState<any>(null);
+  const [editingLead, setEditingLead] = useState<Lead | null>(null);
 
   const fetchLeads = async () => {
     try {
-      const response = await API.get(
+      const response = await API.get<Lead[]>(
         statusFilter
           ? `/leads?status=${statusFilter}`
           : "/leads"
@@ -32,12 +56,12 @@ export default function LeadsPage() {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const saveLead = async (e: React.FormEvent) => {
+  const saveLead = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
@@ -90,15 +114,19 @@ export default function LeadsPage() {
   }
 
   useEffect(() => {
-    fetchLeads();
-  }, [statusFilter]);
+    const loadLeads = async () => {
+      try {
+        const response = await API.get<Lead[]>(
+          statusFilter ? `/leads?status=${statusFilter}` : "/leads"
+        );
+        setLeads(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const statusColors: Record<string, string> = {
-    new: "bg-emerald-100 text-emerald-700",
-    contacted: "bg-blue-100 text-blue-700",
-    qualified: "bg-violet-100 text-violet-700",
-    lost: "bg-red-100 text-red-700",
-  };
+    void loadLeads();
+  }, [statusFilter]);
 
   return (
     <>
@@ -169,11 +197,11 @@ export default function LeadsPage() {
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
             <p className="text-lg font-medium">No leads yet</p>
-            <p className="text-sm mt-1">Click "Add Lead" to get started</p>
+              <p className="text-sm mt-1">Click &quot;Add Lead&quot; to get started</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {leads.map((lead: any) => (
+            {leads.map((lead) => (
               <div
                 key={lead.id}
                 className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow duration-200"
@@ -310,18 +338,13 @@ export default function LeadsPage() {
 
             {/* Modal Body */}
             <form onSubmit={saveLead} className="px-6 py-5 space-y-4">
-              {[
-                { name: "name", placeholder: "Full Name", type: "text", required: true },
-                { name: "phone", placeholder: "Phone Number", type: "tel" },
-                { name: "email", placeholder: "Email Address", type: "email" },
-                { name: "company", placeholder: "Company", type: "text" },
-              ].map((field) => (
+              {leadFields.map((field) => (
                 <div key={field.name}>
                   <input
                     type={field.type}
                     name={field.name}
                     placeholder={field.placeholder}
-                    value={(formData as any)[field.name]}
+                    value={formData[field.name]}
                     onChange={handleChange}
                     required={field.required}
                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition"

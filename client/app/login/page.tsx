@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import API from "@/app/lib/axios";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
@@ -56,8 +57,8 @@ export default function LoginPage() {
           {/* Testimonial */}
           <div className="border-l-2 border-[#d6b98c]/30 pl-4">
             <p className="text-[#f5f0e8]/45 text-xs italic font-light leading-relaxed mb-2">
-              "This platform has completely changed the way our team collaborates.
-              Couldn't imagine working without it."
+              &quot;This platform has completely changed the way our team collaborates.
+              Couldn&apos;t imagine working without it.&quot;
             </p>
             <span className="text-[#d6b98c]/60 text-[11px] tracking-wide uppercase font-light">
               — Sarah K., Product Lead
@@ -153,10 +154,10 @@ export default function LoginPage() {
           </button>
 
           <p className="mt-6 text-center text-xs text-gray-400 font-light">
-            Don't have an account?{" "}
-            <a href="/register" className="text-[#b8925e] font-medium hover:underline">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="text-[#b8925e] font-medium hover:underline">
               Create one
-            </a>
+            </Link>
           </p>
         </div>
       </div>

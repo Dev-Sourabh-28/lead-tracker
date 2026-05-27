@@ -3,6 +3,7 @@
 import { useState } from "react";
 import API from "@/app/lib/axios";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -162,9 +163,7 @@ export default function RegisterPage() {
 
           <p className="mt-6 text-center text-xs text-gray-400 font-light">
             Already have an account?{" "}
-            <a href="/login" className="text-[#b8925e] font-medium hover:underline">
-              Sign in
-            </a>
+            <Link href="/login">Login</Link>
           </p>
         </div>
       </div>

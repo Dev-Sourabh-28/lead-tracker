@@ -1,4 +1,4 @@
-// import { 
+// import {
 //     Body,
 //     Controller,
 //     Get,
@@ -26,7 +26,7 @@
 
 //     @Get()
 //     getLeads(
-//         @Request() req, 
+//         @Request() req,
 //         @Query('status') status?: LeadStatus,
 //     ){
 //         return this.leadService.getLeads(
@@ -39,7 +39,7 @@
 //     updateLead(
 //         @Request() req,
 //         @Param('id') id: string,
-//         @Body() body: CreateLeadDto, 
+//         @Body() body: CreateLeadDto,
 //     ){
 //         return this.leadService.updateLead(
 //             req.user.userId,
@@ -63,11 +63,11 @@
 
 //     @Delete(':id')
 //     deleteLead(
-//         @Request() req, 
+//         @Request() req,
 //         @Param('id') id: string
 //     ){
 //         return this.leadService.deleteLead(
-//             req.user.userId, 
+//             req.user.userId,
 //             id,
 //         );
 //     }

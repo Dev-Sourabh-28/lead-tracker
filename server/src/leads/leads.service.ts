@@ -44,8 +44,8 @@
 //     }
 
 //     async updateLeadStatus(
-//         userId: string, 
-//         leadId: string, 
+//         userId: string,
+//         leadId: string,
 //         status: LeadStatus,
 //     ){
 //         return this.prisma.lead.updateMany({

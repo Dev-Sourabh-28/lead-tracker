@@ -1,6 +1,11 @@
-export default function CyberpunkTheme({
-  portfolio,
-}: any) {
+type ThemeProps = {
+  portfolio: {
+    title: string;
+    bio: string;
+  };
+};
+
+export default function CyberpunkTheme({ portfolio }: ThemeProps) {
 
   return (
     <div className="min-h-screen bg-black text-green-400">

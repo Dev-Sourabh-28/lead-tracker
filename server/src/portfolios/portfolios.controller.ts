@@ -1,45 +1,46 @@
-import { 
-    Body,
-    Controller,
-    Get,
-    Post,
-    Req,
-    UseGuards,
-    Param,
-    Patch
-     } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+  Param,
+  Patch,
+} from '@nestjs/common';
+import type { Request } from 'express';
 
-import {JwtAuthGuard} from 'src/auth/guards/jwt-auth.guards';
-import { CreatePortfolioDto } from './dto/create-portfolio.dto';     
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
+import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfoliosService } from './portfolios.service';
 
 @Controller('portfolios')
 export class PortfoliosController {
-    constructor(private portfoliosService: PortfoliosService){}
+  constructor(private portfoliosService: PortfoliosService) {}
 
-    @UseGuards(JwtAuthGuard)
-    @Post()
-    create (@Req() req, @Body() dto: CreatePortfolioDto){
-        return this.portfoliosService.create(req.user.userId, dto);
-    }
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  create(
+    @Req() req: Request & { user: { userId: string } },
+    @Body() dto: CreatePortfolioDto,
+  ) {
+    return this.portfoliosService.create(req.user.userId, dto);
+  }
 
-    @UseGuards(JwtAuthGuard)
-    @Get()
-    findAll(@Req() req) {
-        return this.portfoliosService.findAll(req.user.userId);
-    }
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  findAll(@Req() req: Request & { user: { userId: string } }) {
+    return this.portfoliosService.findAll(req.user.userId);
+  }
 
-    @Get(':slug')
-    findBySlug(@Param('slug') slug: string){
-        return this.portfoliosService.findBySlug(slug)
-    }
+  @Get(':slug')
+  findBySlug(@Param('slug') slug: string) {
+    return this.portfoliosService.findBySlug(slug);
+  }
 
-    @UseGuards(JwtAuthGuard)
-    @Patch(':id')
-    update(
-        @Param('id') id: string,
-        @Body() dto: CreatePortfolioDto,
-    ){
-        return this.portfoliosService.update(id,dto)
-    }
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() dto: CreatePortfolioDto) {
+    return this.portfoliosService.update(id, dto);
+  }
 }

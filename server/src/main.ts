@@ -1,20 +1,26 @@
-  import { NestFactory } from '@nestjs/core';
-  import { AppModule } from './app.module';
-  import { ValidationPipe } from '@nestjs/common';
-  import cookieParser from 'cookie-parser';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
+import type { RequestHandler } from 'express';
 
-  async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
 
-    app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe());
 
-    app.enableCors({  
-      origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5000'],
-      Credentials: true,
-    });
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:5000',
+    ],
+    credentials: true,
+  });
 
-    app.use(cookieParser());
+  const cookieParserMiddleware = cookieParser as unknown as RequestHandler;
+  app.use(cookieParserMiddleware());
 
-    await app.listen(process.env.PORT ?? 3000);
-  }
-  bootstrap();
+  await app.listen(process.env.PORT ?? 3000);
+}
+void bootstrap();
